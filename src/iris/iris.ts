@@ -9,9 +9,7 @@ async function trainModel(xTrain : tf.Tensor<tf.Rank>, yTrain: tf.Tensor<tf.Rank
   
   console.log('Training model... Please wait.');
 
-  const params = { learningRate: 0.555, epochs: 200 };
-
-  xTrain.shape[1];
+  const params = { learningRate: 0.1, epochs: 200 };
 
   // Define the topology of the model: two dense layers.
   const model = tf.sequential();
@@ -99,6 +97,13 @@ async function predictOnManualInput(model: tf.LayersModel | undefined) {
     const predictOut = model.predict(input) as tf.Tensor<tf.Rank>;
     const logits = Array.from(predictOut.dataSync());
     const winner = data.IRIS_CLASSES[predictOut.argMax(-1).dataSync()[0]];
+
+
+    console.log(predictOut);
+    
+    console.log(logits);
+
+    console.log(winner);
     //ui.setManualInputWinnerMessage(winner);
     //ui.renderLogitsForManualInput(logits);
   });
@@ -134,6 +139,8 @@ async function iris() {
   await evaluateModelOnTestData(model, xTest, yTest);
   //localSaveButton.disabled = false;
 
+  console.log("model loading starts")
+
   if (await loader.urlExists(HOSTED_MODEL_JSON_URL)) {
     console.log('Model available: ' + HOSTED_MODEL_JSON_URL);
     //const button = document.getElementById('load-pretrained-remote');
@@ -142,6 +149,7 @@ async function iris() {
       model = await loader.loadHostedPretrainedModel(HOSTED_MODEL_JSON_URL);
       await predictOnManualInput(model);
       //localSaveButton.disabled = false;
+      console.log("model loading ends")
     }
 }
 
